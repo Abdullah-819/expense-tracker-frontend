@@ -2,7 +2,8 @@ import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import ExpenseForm from "../components/ExpenseForm";
-import Sidebar from "../components/sidebar";
+import Sidebar from "../components/Sidebar";
+
 
 
 import {
