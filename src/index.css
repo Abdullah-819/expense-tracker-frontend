@@ -894,8 +894,8 @@ button,
 .remember-me input {
   appearance: none;
   -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.38);
   background: transparent;
@@ -908,7 +908,7 @@ button,
 .remember-me input::before {
   content: "";
   position: absolute;
-  inset: 4px;
+  inset: 3.7px;
   border-radius: 50%;
   background: linear-gradient(135deg, #ff4d7e, #ff2f68);
   transform: scale(0);
@@ -917,10 +917,12 @@ button,
 
 .remember-me input:checked {
   border-color: #ff4d7e;
+  animation: ringPulse 0.6s ease-out;
   box-shadow:
     0 0 0 4px rgba(255, 77, 126, 0.22),
     inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
+
 
 .remember-me input:checked::before {
   transform: scale(1);
@@ -934,4 +936,15 @@ button,
   outline: none;
   box-shadow:
     0 0 0 4px rgba(255, 77, 126, 0.28);
+}
+@keyframes ringPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 126, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(255, 77, 126, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 126, 0);
+  }
 }
