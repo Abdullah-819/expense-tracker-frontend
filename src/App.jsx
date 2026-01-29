@@ -4,6 +4,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           </div>
         }
       />
+
       <Route
         path="/login"
         element={
@@ -24,6 +26,7 @@ function App() {
           </div>
         }
       />
+
       <Route
         path="/register"
         element={
@@ -32,12 +35,15 @@ function App() {
           </div>
         }
       />
+
       <Route
         path="/dashboard"
         element={
-          <div className="page-enter">
-            <Dashboard />
-          </div>
+          <ProtectedRoute>
+            <div className="page-enter">
+              <Dashboard />
+            </div>
+          </ProtectedRoute>
         }
       />
     </Routes>

@@ -879,3 +879,59 @@ button,
     display: flex;
   }
 }
+.remember-me {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 14px 0 24px;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.78);
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-me input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.38);
+  background: transparent;
+  position: relative;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.remember-me input::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff4d7e, #ff2f68);
+  transform: scale(0);
+  transition: transform 0.18s ease;
+}
+
+.remember-me input:checked {
+  border-color: #ff4d7e;
+  box-shadow:
+    0 0 0 4px rgba(255, 77, 126, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.remember-me input:checked::before {
+  transform: scale(1);
+}
+
+.remember-me:hover {
+  color: #ffffff;
+}
+
+.remember-me input:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 4px rgba(255, 77, 126, 0.28);
+}
