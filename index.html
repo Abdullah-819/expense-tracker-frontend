@@ -1,13 +1,49 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Playwrite+NZ+Basic:wght@100..400&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap"
+  rel="stylesheet"
+/>
+
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+
+    <!-- Viewport (important for mobile layout & charts) -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+
+    <!-- SEO -->
+    <title>Expense Tracker | Track Your Spending Smartly</title>
+    <meta
+      name="description"
+      content="A modern expense tracker to manage and visualize your daily spending. Built with React."
+    />
+    <meta name="author" content="Abdullah" />
+
+    <!-- Theme color (status bar color on mobile) -->
+    <meta name="theme-color" content="#0f0f0f" />
+
+    <!-- Apple / iOS support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Prevent unwanted zoom on inputs (mobile UX) -->
+    <meta name="format-detection" content="telephone=no" />
   </head>
+
   <body>
+    <noscript>
+      You need JavaScript enabled to run this app.
+    </noscript>
+
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

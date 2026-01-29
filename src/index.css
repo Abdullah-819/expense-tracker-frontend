@@ -5,10 +5,9 @@
   --text-main: rgba(255, 255, 255, 0.92);
   --text-muted: rgba(255, 255, 255, 0.6);
   --accent: #38bdf8;
-
-  font-family: system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue",
-    Arial, sans-serif;
+  --font-main: "Playwrite NZ Basic", system-ui, sans-serif;
+  --font-heading: "Sour Gummy", system-ui, sans-serif;
+  --font-accent: "Dancing Script", cursive;
 
   line-height: 1.6;
   font-weight: 400;
@@ -21,6 +20,42 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+body {
+  font-family: var(--font-main);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+.sidebar-title,
+.landing-title {
+  font-family: var(--font-heading);
+}
+
+.auth-card h2,
+.expense-form h3 {
+  font-family: var(--font-heading);
+}
+
+.landing-subtitle,
+p,
+span,
+li {
+  font-family: var(--font-main);
+}
+
+.logo,
+.brand,
+.signature {
+  font-family: var(--font-accent);
+}
+
 
 
 *,
