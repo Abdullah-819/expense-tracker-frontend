@@ -599,7 +599,7 @@ button:active {
 
 .chart-card {
   width: 100%;
-  height: 300px;
+  height: 340px;
   padding: 16px;
   border-radius: 18px;
   background: linear-gradient(
@@ -611,14 +611,16 @@ button:active {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: visible;
+  overflow: hidden;
 }
 
-@media (max-width: 900px) {
-  .chart-card {
-    height: 260px;
-  }
+.chart-wrapper {
+  width: 100%;
+  height: 300px;
+  min-width: 0;
+  position: relative;
 }
+
 .chart-card svg {
   width: 100% !important;
   height: 100% !important;
@@ -630,19 +632,35 @@ button:active {
   height: 100%;
 }
 
-/* Mobile-specific fixes */
 @media (max-width: 900px) {
-  .chart-card {
-    height: 280px;
-    padding: 14px;
-  }
-}
-
-/* Small phones */
-@media (max-width: 480px) {
   .chart-card {
     height: 260px;
     padding: 12px;
+    overflow: hidden; /* THIS line was overflow-x: auto; and broke recharts sizing */
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  @media (max-width: 900px) {
+  .chart-card svg {
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.45));
+  }
+}
+
+
+  .chart-wrapper {
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-card {
+    height: 280px;
+    padding: 12px;
+  }
+
+  .chart-wrapper {
+    height: 240px;
   }
 }
 
@@ -650,8 +668,6 @@ button:active {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
-
-
 
 .page-enter {
   animation: pageIn 0.6s ease both;
@@ -722,15 +738,11 @@ button:active {
     gap: 14px;
   }
 
-  .chart-card {
-    overflow-x: auto;
-    padding: 16px;
-  }
-
   h2 {
     margin-top: 10px;
   }
 }
+
 
 .sidebar-toggle {
   position: fixed;
@@ -738,7 +750,31 @@ button:active {
   left: 16px;
   z-index: 2000;
 }
+.sidebar-toggle {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+  font-size: 18px;
+  color: #fff;
+}
 
+.sidebar-toggle:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.sidebar-toggle:active {
+  transform: scale(0.96);
+}
 
 .mobile-overlay {
   position: fixed;
@@ -759,6 +795,7 @@ button,
 .sidebar-menu li {
   touch-action: manipulation;
 }
+
 @media (max-width: 900px) {
   .sidebar {
     background: #0b0b0b;
@@ -766,6 +803,15 @@ button,
     -webkit-backdrop-filter: none;
   }
 }
+@media (max-width: 900px) {
+  .sidebar-title {
+    margin-top: 72px;
+    padding-top: 10px;
+    padding-bottom: 12px;
+  }
+}
+
+
 .expense-form select {
   appearance: none;
   -webkit-appearance: none;
@@ -777,4 +823,59 @@ button,
 .expense-form select option {
   background-color: #0b0b0b;
   color: #ffffff;
+}
+
+.sidebar-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+}
+
+.burger,
+.burger::before,
+.burger::after {
+  width: 20px;
+  height: 2px;
+  background: #fff;
+  display: block;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.burger::before,
+.burger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.burger::before {
+  top: -6px;
+}
+
+.burger::after {
+  top: 6px;
+}
+
+.sidebar-toggle.open .burger {
+  background: transparent;
+}
+
+.sidebar-toggle.open .burger::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.sidebar-toggle.open .burger::after {
+  transform: rotate(-45deg);
+  top: 0;
+}
+.sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .sidebar-toggle {
+    display: flex;
+  }
 }
