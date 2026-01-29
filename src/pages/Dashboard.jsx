@@ -84,6 +84,36 @@ const Dashboard = () => {
     navigate("/dashboard?mode=add");
   };
 
+  const handleChangeName = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    try {
+      const res = await api.put("/user/change-name", { name });
+      setMessage(res.data.message);
+      setName("");
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Error updating name");
+    }
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    try {
+      const res = await api.put("/user/change-password", {
+        oldPassword,
+        newPassword,
+      });
+      setMessage(res.data.message);
+      setOldPassword("");
+      setNewPassword("");
+    } catch (err) {
+      setMessage(
+        err.response?.data?.message || "Error updating password"
+      );
+    }
+  };
+
   return (
     <div className="dashboard-layout">
       <Sidebar />
@@ -111,7 +141,10 @@ const Dashboard = () => {
                         isAnimationActive={false}
                       >
                         {pieData.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                          <Cell
+                            key={i}
+                            fill={COLORS[i % COLORS.length]}
+                          />
                         ))}
                       </Pie>
                       <text
@@ -149,7 +182,10 @@ const Dashboard = () => {
                           innerRadius={70}
                         >
                           {pieData.map((_, i) => (
-                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                            <Cell
+                              key={i}
+                              fill={COLORS[i % COLORS.length]}
+                            />
                           ))}
                         </Pie>
                         <text
@@ -197,7 +233,9 @@ const Dashboard = () => {
                       <button onClick={() => handleEdit(exp)}>
                         Edit
                       </button>
-                      <button onClick={() => deleteExpense(exp._id)}>
+                      <button
+                        onClick={() => deleteExpense(exp._id)}
+                      >
                         Delete
                       </button>
                     </div>
@@ -220,7 +258,10 @@ const Dashboard = () => {
         )}
 
         {mode === "change-name" && (
-          <form className="expense-form">
+          <form
+            className="expense-form"
+            onSubmit={handleChangeName}
+          >
             <h3>Change Name</h3>
             <input
               placeholder="New Name"
@@ -228,12 +269,15 @@ const Dashboard = () => {
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <button>Update Name</button>
+            <button type="submit">Update Name</button>
           </form>
         )}
 
         {mode === "change-password" && (
-          <form className="expense-form">
+          <form
+            className="expense-form"
+            onSubmit={handleChangePassword}
+          >
             <h3>Change Password</h3>
             <input
               type="password"
@@ -249,7 +293,7 @@ const Dashboard = () => {
               onChange={(e) => setNewPassword(e.target.value)}
               required
             />
-            <button>Update Password</button>
+            <button type="submit">Update Password</button>
           </form>
         )}
       </main>
