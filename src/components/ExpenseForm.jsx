@@ -8,6 +8,8 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
     category: "Food",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const isEdit = Boolean(editingExpense?._id);
 
   useEffect(() => {
@@ -27,9 +29,15 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (form.amount <= 0) {
+      return alert("Amount must be greater than 0");
+    }
+
     try {
+      setLoading(true);
+
       const payload = {
-        title: form.title,
+        title: form.title.trim(),
         amount: Number(form.amount),
         category: form.category,
       };
@@ -45,6 +53,8 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
       onAdd();
     } catch (err) {
       alert(err.response?.data?.message || "Error saving expense");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,6 +68,7 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
         value={form.title}
         onChange={handleChange}
         required
+        autoFocus
       />
 
       <input
@@ -69,11 +80,7 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
         required
       />
 
-      <select
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-      >
+      <select name="category" value={form.category} onChange={handleChange}>
         <option>Food</option>
         <option>Travel</option>
         <option>Bills</option>
@@ -82,8 +89,8 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
       </select>
 
       <div style={{ display: "flex", gap: "10px" }}>
-        <button type="submit">
-          {isEdit ? "Update" : "Add"}
+        <button type="submit" disabled={loading}>
+          {loading ? "Saving..." : isEdit ? "Update" : "Add"}
         </button>
 
         {isEdit && (
@@ -91,11 +98,7 @@ const ExpenseForm = ({ onAdd, editingExpense, clearEdit }) => {
             type="button"
             onClick={() => {
               clearEdit();
-              setForm({
-                title: "",
-                amount: "",
-                category: "Food",
-              });
+              setForm({ title: "", amount: "", category: "Food" });
             }}
           >
             Cancel

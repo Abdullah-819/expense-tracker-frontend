@@ -1,3 +1,4 @@
+import { Filter } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/axios";
@@ -25,6 +26,15 @@ const useWindowWidth = () => {
   return width;
 };
 
+const formatDateTime = (date) =>
+  new Date(date).toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
 const Dashboard = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -38,6 +48,13 @@ const Dashboard = () => {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editingExpense, setEditingExpense] = useState(null);
+const [filterOpen, setFilterOpen] = useState(false);
+  const [filterType, setFilterType] = useState("day");
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [category, setCategory] = useState("");
+  const [min, setMin] = useState("");
+  const [max, setMax] = useState("");
 
   const [name, setName] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -47,21 +64,30 @@ const Dashboard = () => {
   const fetchExpenses = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/expenses");
+      const res = await api.get("/expenses", {
+        params: {
+          type: filterType,
+          year,
+          month,
+          category,
+          min,
+          max,
+        },
+      });
       setExpenses(res.data);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchExpenses();
+  }, [filterType, month, year, category, min, max]);
+
   const deleteExpense = async (id) => {
     await api.delete(`/expenses/${id}`);
     fetchExpenses();
   };
-
-  useEffect(() => {
-    fetchExpenses();
-  }, []);
 
   const totalAmount = useMemo(
     () => expenses.reduce((sum, e) => sum + e.amount, 0),
@@ -124,29 +150,81 @@ const Dashboard = () => {
 
         {mode === "view" && (
           <>
-            <h3>Total Expense</h3>
+            <div className="filter-trigger" onClick={() => setFilterOpen(!filterOpen)}>
+  <span>{filterType === "day" ? "Today" : filterType}</span>
+  <i className="filter-icon"><Filter size={16} />
+</i>
+</div>
+
+{filterOpen && (
+  <div className="filter-dropdown">
+    <button onClick={() => { setFilterType("day"); setFilterOpen(false); }}>
+      Today
+    </button>
+    <button onClick={() => { setFilterType("month"); setFilterOpen(false); }}>
+      Month
+    </button>
+    <button onClick={() => { setFilterType("year"); setFilterOpen(false); }}>
+      Year
+    </button>
+  </div>
+)}
+
 
             {pieData.length > 0 && (
               <div className="chart-card">
                 <div className="chart-wrapper">
                   {isMobile ? (
                     <PieChart width={260} height={260}>
-                      <Pie
-                        data={pieData}
-                        dataKey="value"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={95}
-                        innerRadius={60}
-                        isAnimationActive={false}
-                      >
-                        {pieData.map((_, i) => (
-                          <Cell
-                            key={i}
-                            fill={COLORS[i % COLORS.length]}
-                          />
-                        ))}
-                      </Pie>
+                      <defs>
+  <linearGradient id="grad-blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#38bdf8" />
+    <stop offset="100%" stopColor="#0ea5e9" />
+  </linearGradient>
+  <linearGradient id="grad-green" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#22c55e" />
+    <stop offset="100%" stopColor="#16a34a" />
+  </linearGradient>
+  <linearGradient id="grad-yellow" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#fde047" />
+    <stop offset="100%" stopColor="#facc15" />
+  </linearGradient>
+  <linearGradient id="grad-orange" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#fb923c" />
+    <stop offset="100%" stopColor="#f97316" />
+  </linearGradient>
+  <linearGradient id="grad-purple" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#a855f7" />
+    <stop offset="100%" stopColor="#9333ea" />
+  </linearGradient>
+</defs>
+
+                     <Pie
+  data={pieData}
+  dataKey="value"
+  cx="50%"
+  cy="50%"
+  startAngle={90}
+  endAngle={-270}
+  innerRadius={82}
+  outerRadius={115}
+  paddingAngle={4}
+  cornerRadius={14}
+  isAnimationActive
+  animationBegin={200}
+  animationDuration={1200}
+  animationEasing="ease-out"
+>
+  {pieData.map((_, i) => (
+    <Cell
+      key={i}
+      fill={`url(#grad-${["blue","green","yellow","orange","purple"][i % 5]})`}
+      stroke="rgba(255,255,255,0.35)"
+      strokeWidth={1.5}
+    />
+  ))}
+</Pie>
+
                       <text
                         x="50%"
                         y="46%"
@@ -166,28 +244,62 @@ const Dashboard = () => {
                         fill="rgba(255,255,255,0.6)"
                         fontSize="12"
                       >
-                        Total
+                        Total Expense
                       </text>
                       <Tooltip />
                     </PieChart>
                   ) : (
                     <ResponsiveContainer width="100%">
                       <PieChart>
-                        <Pie
-                          data={pieData}
-                          dataKey="value"
-                          cx="50%"
-                          cy="52%"
-                          outerRadius={120}
-                          innerRadius={70}
-                        >
-                          {pieData.map((_, i) => (
-                            <Cell
-                              key={i}
-                              fill={COLORS[i % COLORS.length]}
-                            />
-                          ))}
-                        </Pie>
+                         <defs>
+  <linearGradient id="grad-blue" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#38bdf8" />
+    <stop offset="100%" stopColor="#0ea5e9" />
+  </linearGradient>
+  <linearGradient id="grad-green" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#22c55e" />
+    <stop offset="100%" stopColor="#16a34a" />
+  </linearGradient>
+  <linearGradient id="grad-yellow" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#fde047" />
+    <stop offset="100%" stopColor="#facc15" />
+  </linearGradient>
+  <linearGradient id="grad-orange" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#fb923c" />
+    <stop offset="100%" stopColor="#f97316" />
+  </linearGradient>
+  <linearGradient id="grad-purple" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stopColor="#a855f7" />
+    <stop offset="100%" stopColor="#9333ea" />
+  </linearGradient>
+</defs>
+
+                       <Pie
+  data={pieData}
+  dataKey="value"
+  cx="50%"
+  cy="50%"
+  startAngle={90}
+  endAngle={-270}
+  innerRadius={82}
+  outerRadius={115}
+  paddingAngle={4}
+  cornerRadius={14}
+  isAnimationActive
+  animationBegin={200}
+  animationDuration={1200}
+  animationEasing="ease-out"
+>
+  {pieData.map((_, i) => (
+    <Cell
+      key={i}
+      fill={`url(#grad-${["blue","green","yellow","orange","purple"][i % 5]})`}
+      stroke="rgba(255,255,255,0.35)"
+      strokeWidth={1.5}
+    />
+  ))}
+</Pie>
+
                         <text
                           x="50%"
                           y="48%"
@@ -199,6 +311,7 @@ const Dashboard = () => {
                         >
                           Rs {totalAmount}
                         </text>
+
                         <text
                           x="50%"
                           y="58%"
@@ -209,6 +322,7 @@ const Dashboard = () => {
                         >
                           Total Expense
                         </text>
+
                         <Tooltip />
                       </PieChart>
                     </ResponsiveContainer>
@@ -229,6 +343,14 @@ const Dashboard = () => {
                     <span>
                       {exp.amount} — {exp.category}
                     </span>
+                    <small>
+                      Added: {formatDateTime(exp.createdAt)}
+                    </small>
+                    {exp.updatedAt !== exp.createdAt && (
+                      <small>
+                        Updated: {formatDateTime(exp.updatedAt)}
+                      </small>
+                    )}
                     <div>
                       <button onClick={() => handleEdit(exp)}>
                         Edit
